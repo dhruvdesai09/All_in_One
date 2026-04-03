@@ -40,3 +40,10 @@ captures/
 
 # Cursor
 .cursor
+
+build_log.txt
+build_log2.txt
+build_log3.txt
+build_log4.txt
+build_log_cmd.txt
+compile_log.txt

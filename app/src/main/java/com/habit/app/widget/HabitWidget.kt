@@ -5,7 +5,10 @@ import android.content.Context
 import android.content.Intent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp                              // ✅ Fixed: was androidx.glance.unit.dp
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.glance.LocalSize
+import androidx.glance.appwidget.SizeMode
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
@@ -37,6 +40,8 @@ import kotlinx.coroutines.flow.first
 import java.time.LocalDate
 
 class HabitWidget : GlanceAppWidget() {
+    override val sizeMode = SizeMode.Exact
+
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         val entry = EntryPointAccessors.fromApplication(context.applicationContext, WidgetEntryPoint::class.java)
         val repo = entry.habitRepository()
@@ -53,17 +58,22 @@ class HabitWidget : GlanceAppWidget() {
         val heatmap = if (mode == WidgetDisplayMode.Heatmap) repo.heatmapSnapshot(heatStart, today).associateBy { it.date } else emptyMap()
 
         provideContent {
+            val size = LocalSize.current
+            val widthScale = (size.width.value / 180f).coerceIn(1f, 2f)
+            val heightScale = (size.height.value / 110f).coerceIn(1f, 2f)
+            val scale = minOf(widthScale, heightScale)
+
             GlanceTheme {
                 Column(
                     modifier = GlanceModifier
                         .fillMaxSize()
                         .background(ColorProvider(Color(0xFF121318)))
-                        .padding(10.dp)
+                        .padding((10f * scale).dp)
                         .clickable(openApp),
                 ) {
                     when (mode) {
-                        WidgetDisplayMode.Pending -> PendingSection(pendingTitles)
-                        WidgetDisplayMode.Heatmap -> HeatmapSection(heatStart, heatmap)
+                        WidgetDisplayMode.Pending -> PendingSection(pendingTitles, scale)
+                        WidgetDisplayMode.Heatmap -> HeatmapSection(heatStart, heatmap, scale)
                     }
                 }
             }
@@ -73,41 +83,49 @@ class HabitWidget : GlanceAppWidget() {
 
 @SuppressLint("RestrictedApi")
 @Composable
-private fun PendingSection(titles: List<String>) {
+private fun PendingSection(titles: List<String>, scale: Float) {
     Text(
         text = "Today",
-        style = TextStyle(color = ColorProvider(Color(0xFFE8E8E8)), fontWeight = FontWeight.Medium),
+        style = TextStyle(
+            color = ColorProvider(Color(0xFFE8E8E8)),
+            fontWeight = FontWeight.Medium,
+            fontSize = (16f * scale).sp
+        ),
     )
-    Spacer(modifier = GlanceModifier.height(6.dp))
+    Spacer(modifier = GlanceModifier.height((6f * scale).dp))
     if (titles.isEmpty()) {
         Text(
             text = "All caught up",
-            style = TextStyle(color = ColorProvider(Color(0xFF8F9A8B))),
+            style = TextStyle(color = ColorProvider(Color(0xFF8F9A8B)), fontSize = (14f * scale).sp),
         )
     } else {
         titles.take(5).forEach { t ->
             Text(
                 text = "• $t",
-                style = TextStyle(color = ColorProvider(Color(0xFFB8C5B0))),
+                style = TextStyle(color = ColorProvider(Color(0xFFB8C5B0)), fontSize = (14f * scale).sp),
             )
-            Spacer(modifier = GlanceModifier.height(2.dp))
+            Spacer(modifier = GlanceModifier.height((2f * scale).dp))
         }
         if (titles.size > 5) {
             Text(
                 text = "+${titles.size - 5} more",
-                style = TextStyle(color = ColorProvider(Color(0xFF6B7C66))),
+                style = TextStyle(color = ColorProvider(Color(0xFF6B7C66)), fontSize = (14f * scale).sp),
             )
         }
     }
 }
 
 @Composable
-private fun HeatmapSection(start: LocalDate, cells: Map<LocalDate, DayIntensity>) {
+private fun HeatmapSection(start: LocalDate, cells: Map<LocalDate, DayIntensity>, scale: Float) {
     Text(
         text = "Activity",
-        style = TextStyle(color = ColorProvider(Color(0xFFE8E8E8)), fontWeight = FontWeight.Medium),
+        style = TextStyle(
+            color = ColorProvider(Color(0xFFE8E8E8)),
+            fontWeight = FontWeight.Medium,
+            fontSize = (16f * scale).sp
+        ),
     )
-    Spacer(modifier = GlanceModifier.height(6.dp))
+    Spacer(modifier = GlanceModifier.height((6f * scale).dp))
     Column(horizontalAlignment = Alignment.Start) {
         repeat(7) { row ->
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -117,8 +135,8 @@ private fun HeatmapSection(start: LocalDate, cells: Map<LocalDate, DayIntensity>
                     val di = cells[d]
                     Box(
                         modifier = GlanceModifier
-                            .padding(2.dp)
-                            .size(10.dp)
+                            .padding((2f * scale).dp)
+                            .size((10f * scale).dp)
                             .background(ColorProvider(cellColor(di))),
                     ) {}
                 }
