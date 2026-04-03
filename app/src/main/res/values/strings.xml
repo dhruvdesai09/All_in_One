@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Habit</string>
+    <string name="widget_pending_description">Today\'s pending habits</string>
+    <string name="widget_heatmap_description">Activity heatmap</string>
+    <string name="channel_habit_reminders">Habit reminders</string>
+</resources>
