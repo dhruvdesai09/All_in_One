@@ -17,7 +17,10 @@ object DatabaseModule {
     @Singleton
     fun provideDatabase(@ApplicationContext context: Context): AppDatabase =
         Room.databaseBuilder(context, AppDatabase::class.java, "habit.db")
-            .addMigrations(com.habit.app.data.local.MIGRATION_1_2)
+            .addMigrations(com.habit.app.data.local.MIGRATION_1_2, com.habit.app.data.local.MIGRATION_2_3)
             .fallbackToDestructiveMigration()
             .build()
+            
+    @Provides
+    fun providePasswordDao(database: AppDatabase): com.habit.app.data.local.PasswordDao = database.passwordDao()
 }

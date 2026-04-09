@@ -13,12 +13,30 @@ val MIGRATION_1_2 = object : Migration(1, 2) {
     }
 }
 
+val MIGRATION_2_3 = object : Migration(2, 3) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            """
+            CREATE TABLE IF NOT EXISTS `passwords` (
+                `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                `name` TEXT NOT NULL,
+                `encryptedUsername` BLOB NOT NULL,
+                `usernameIv` BLOB NOT NULL,
+                `encryptedPassword` BLOB NOT NULL,
+                `passwordIv` BLOB NOT NULL
+            )
+            """.trimIndent()
+        )
+    }
+}
+
 @Database(
-    entities = [HabitEntity::class, HabitLogEntity::class],
-    version = 2,
+    entities = [HabitEntity::class, HabitLogEntity::class, PasswordEntity::class],
+    version = 3,
     exportSchema = false,
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun habitDao(): HabitDao
     abstract fun habitLogDao(): HabitLogDao
+    abstract fun passwordDao(): PasswordDao
 }

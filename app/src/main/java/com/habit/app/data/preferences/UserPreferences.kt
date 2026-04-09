@@ -22,6 +22,7 @@ data class UserPreferencesState(
     val reminderMinute: Int = 0,
     val remindersEnabled: Boolean = true,
     val widgetMode: WidgetDisplayMode = WidgetDisplayMode.Pending,
+    val pinHash: String? = null,
 )
 
 @Singleton
@@ -35,6 +36,7 @@ class UserPreferences @Inject constructor(
         val reminderMinute = intPreferencesKey("reminder_minute")
         val remindersEnabled = booleanPreferencesKey("reminders_enabled")
         val widgetMode = stringPreferencesKey("widget_mode")
+        val pinHash = stringPreferencesKey("pin_hash")
     }
 
     val flow: Flow<UserPreferencesState> = dataStore.data.map { p ->
@@ -43,6 +45,7 @@ class UserPreferences @Inject constructor(
             reminderMinute = p[Keys.reminderMinute] ?: 0,
             remindersEnabled = p[Keys.remindersEnabled] ?: true,
             widgetMode = WidgetDisplayMode.fromRaw(p[Keys.widgetMode]),
+            pinHash = p[Keys.pinHash],
         )
     }
 
@@ -59,5 +62,25 @@ class UserPreferences @Inject constructor(
 
     suspend fun setWidgetMode(mode: WidgetDisplayMode) {
         dataStore.edit { it[Keys.widgetMode] = mode.raw }
+    }
+
+    suspend fun setPin(pin: String) {
+        val hash = hashPin(pin)
+        dataStore.edit { it[Keys.pinHash] = hash }
+    }
+
+    suspend fun clearPin() {
+        dataStore.edit { it.remove(Keys.pinHash) }
+    }
+
+    fun verifyPin(pin: String, storedHash: String?): Boolean {
+        return storedHash != null && hashPin(pin) == storedHash
+    }
+
+    private fun hashPin(pin: String): String {
+        val bytes = pin.toByteArray()
+        val md = java.security.MessageDigest.getInstance("SHA-256")
+        val digest = md.digest(bytes)
+        return digest.joinToString("") { "%02x".format(it) }
     }
 }

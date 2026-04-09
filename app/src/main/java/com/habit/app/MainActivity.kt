@@ -8,13 +8,10 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
 import androidx.navigation.compose.rememberNavController
-import com.habit.app.presentation.navigation.AppNavHost
+import com.habit.app.presentation.navigation.MainAppScreen
 import com.habit.app.presentation.theme.HabitTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -39,9 +36,7 @@ class MainActivity : ComponentActivity() {
                         if (!granted) launcher.launch(permission)
                     }
                 }
-                Surface(modifier = Modifier.fillMaxSize()) {
-                    AppNavHost(navController = navController)
-                }
+                MainAppScreen(navController = navController)
             }
         }
     }
