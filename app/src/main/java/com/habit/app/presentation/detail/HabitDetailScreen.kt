@@ -42,10 +42,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.habit.app.presentation.components.ActivityHeatmap
 import com.habit.app.presentation.theme.AccentEmerald
-import com.habit.app.presentation.theme.ForestGreenDim
-import com.habit.app.presentation.theme.ForestGreenLight
-import com.habit.app.presentation.theme.StreakOrange
-import com.habit.app.presentation.theme.StreakYellow
+import com.habit.app.presentation.theme.SurfaceBorder
+import com.habit.app.presentation.theme.NexoraMint
+import com.habit.app.presentation.theme.NexoraRose
+import com.habit.app.presentation.theme.NexoraGold
 import com.habit.app.presentation.theme.SurfaceCard
 import com.habit.app.presentation.theme.TextMuted
 import com.habit.app.presentation.theme.TextSecondary
@@ -163,7 +163,7 @@ fun HabitDetailScreen(
                                 val day = i + 1
                                 val active = day in habit.activeWeekdays
                                 Surface(
-                                    color  = if (active) ForestGreenLight.copy(alpha = 0.2f) else MaterialTheme.colorScheme.surfaceVariant,
+                                    color  = if (active) NexoraMint.copy(alpha = 0.2f) else MaterialTheme.colorScheme.surfaceVariant,
                                     shape  = CircleShape,
                                     modifier = Modifier.size(24.dp),
                                 ) {
@@ -171,7 +171,7 @@ fun HabitDetailScreen(
                                         Text(
                                             text  = label,
                                             style = MaterialTheme.typography.labelSmall,
-                                            color = if (active) ForestGreenLight else TextMuted,
+                                            color = if (active) NexoraMint else TextMuted,
                                         )
                                     }
                                 }
@@ -195,9 +195,9 @@ fun HabitDetailScreen(
 @Composable
 private fun StreakHeroCard(streak: Int) {
     val (gradStart, gradEnd, emoji, label) = when {
-        streak >= 30 -> Quad(StreakOrange, StreakOrange.copy(alpha = 0.4f), "🔥", "on fire!")
-        streak >= 7  -> Quad(StreakYellow, StreakYellow.copy(alpha = 0.4f), "⚡", "great streak!")
-        streak > 0   -> Quad(ForestGreenLight, ForestGreenDim, "✅", "keep it up!")
+        streak >= 30 -> Quad(NexoraRose, NexoraRose.copy(alpha = 0.4f), "🔥", "on fire!")
+        streak >= 7  -> Quad(NexoraGold, NexoraGold.copy(alpha = 0.4f), "⚡", "great streak!")
+        streak > 0   -> Quad(NexoraMint, SurfaceBorder, "✅", "keep it up!")
         else         -> Quad(SurfaceCard, SurfaceCard, "🌱", "start today!")
     }
 

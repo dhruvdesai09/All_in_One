@@ -20,6 +20,17 @@ import javax.inject.Inject
 
 enum class PinScreenMode { CREATE, VERIFY }
 
+enum class ChangePinStep { VERIFY_OLD, SET_NEW, CONFIRM_NEW }
+
+data class ChangePinState(
+    val isActive: Boolean = false,
+    val step: ChangePinStep = ChangePinStep.VERIFY_OLD,
+    val pinInput: String = "",
+    val newPin: String = "",
+    val error: String? = null,
+    val success: Boolean = false,
+)
+
 data class PasswordVaultState(
     val pinHash: String? = null,
     val isUnlocked: Boolean = false,
@@ -61,6 +72,10 @@ class PasswordViewModel @Inject constructor(
     // --- Vault / PIN state ---
     private val _vaultState = MutableStateFlow(PasswordVaultState())
     val vaultState: StateFlow<PasswordVaultState> = _vaultState.asStateFlow()
+
+    // --- Change PIN state ---
+    private val _changePinState = MutableStateFlow(ChangePinState())
+    val changePinState: StateFlow<ChangePinState> = _changePinState.asStateFlow()
 
     // --- Password list ---
     val passwords: StateFlow<List<PasswordEntity>> = repo.observeAll()
@@ -113,6 +128,63 @@ class PasswordViewModel @Inject constructor(
 
     fun lockVault() {
         _vaultState.update { it.copy(isUnlocked = false, pinInput = "", pinError = null) }
+        // Also cancel any in-progress change PIN flow
+        _changePinState.value = ChangePinState()
+    }
+
+    // ---- Change PIN actions ----
+
+    fun startChangePinFlow() {
+        _changePinState.value = ChangePinState(isActive = true, step = ChangePinStep.VERIFY_OLD)
+    }
+
+    fun cancelChangePinFlow() {
+        _changePinState.value = ChangePinState()
+    }
+
+    fun onChangePinInputChange(value: String) {
+        if (value.length > 6) return
+        _changePinState.update { it.copy(pinInput = value, error = null) }
+    }
+
+    fun submitChangePinStep() {
+        val cs = _changePinState.value
+        val currentHash = _vaultState.value.pinHash
+        when (cs.step) {
+            ChangePinStep.VERIFY_OLD -> {
+                if (!prefs.verifyPin(cs.pinInput, currentHash)) {
+                    _changePinState.update { it.copy(error = "Incorrect current PIN", pinInput = "") }
+                } else {
+                    _changePinState.update {
+                        it.copy(step = ChangePinStep.SET_NEW, pinInput = "", error = null)
+                    }
+                }
+            }
+            ChangePinStep.SET_NEW -> {
+                if (cs.pinInput.length < 4) {
+                    _changePinState.update { it.copy(error = "New PIN must be at least 4 digits") }
+                } else {
+                    _changePinState.update {
+                        it.copy(step = ChangePinStep.CONFIRM_NEW, newPin = cs.pinInput, pinInput = "", error = null)
+                    }
+                }
+            }
+            ChangePinStep.CONFIRM_NEW -> {
+                if (cs.pinInput != cs.newPin) {
+                    _changePinState.update { it.copy(error = "PINs do not match", pinInput = "") }
+                } else {
+                    viewModelScope.launch {
+                        prefs.setPin(cs.newPin)
+                        // pinHash in vaultState will auto-update via the init collector
+                        _changePinState.update { it.copy(success = true) }
+                    }
+                }
+            }
+        }
+    }
+
+    fun resetChangePinSuccess() {
+        _changePinState.value = ChangePinState()
     }
 
     // ---- Add / Edit actions ----

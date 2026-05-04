@@ -54,7 +54,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.habit.app.presentation.theme.AccentEmerald
 import com.habit.app.presentation.theme.DangerRed
-import com.habit.app.presentation.theme.ForestGreenLight
+import com.habit.app.presentation.theme.NexoraMint
 import com.habit.app.presentation.theme.SurfaceBorder
 import com.habit.app.presentation.theme.SurfaceCard
 import com.habit.app.presentation.theme.SurfaceElevated
@@ -167,9 +167,9 @@ fun AddEditHabitScreen(
                         modifier       = Modifier.fillMaxWidth(),
                         textStyle      = MaterialTheme.typography.bodyLarge,
                         colors         = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor   = ForestGreenLight,
+                            focusedBorderColor   = NexoraMint,
                             unfocusedBorderColor = SurfaceBorder,
-                            focusedLabelColor    = ForestGreenLight,
+                            focusedLabelColor    = NexoraMint,
                         ),
                     )
                     OutlinedTextField(
@@ -179,9 +179,9 @@ fun AddEditHabitScreen(
                         modifier      = Modifier.fillMaxWidth(),
                         minLines      = 2,
                         colors        = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor   = ForestGreenLight,
+                            focusedBorderColor   = NexoraMint,
                             unfocusedBorderColor = SurfaceBorder,
-                            focusedLabelColor    = ForestGreenLight,
+                            focusedLabelColor    = NexoraMint,
                         ),
                     )
                 }
@@ -193,7 +193,7 @@ fun AddEditHabitScreen(
                     onClick = { viewModel.setIsOneTime(false) },
                     modifier = Modifier.weight(1f),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = if (!state.isOneTime) ForestGreenLight else SurfaceElevated,
+                        containerColor = if (!state.isOneTime) NexoraMint else SurfaceElevated,
                         contentColor = if (!state.isOneTime) Color(0xFF051005) else TextMuted
                     )
                 ) {
@@ -203,7 +203,7 @@ fun AddEditHabitScreen(
                     onClick = { viewModel.setIsOneTime(true) },
                     modifier = Modifier.weight(1f),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = if (state.isOneTime) ForestGreenLight else SurfaceElevated,
+                        containerColor = if (state.isOneTime) NexoraMint else SurfaceElevated,
                         contentColor = if (state.isOneTime) Color(0xFF051005) else TextMuted
                     )
                 ) {
@@ -260,7 +260,7 @@ fun AddEditHabitScreen(
                                             viewModel.setTargetDate(it / 86400000L)
                                         }
                                         showDateDialog = false
-                                    }) { Text("OK", color = ForestGreenLight) }
+                                    }) { Text("OK", color = NexoraMint) }
                                 },
                                 dismissButton = {
                                     TextButton(onClick = { showDateDialog = false }) { Text("Cancel") }
@@ -298,14 +298,14 @@ fun AddEditHabitScreen(
                                     Icons.Filled.Check,
                                     contentDescription = null,
                                     modifier = Modifier.size(16.dp),
-                                    tint = ForestGreenLight,
+                                    tint = NexoraMint,
                                 )
                                 Spacer(modifier = Modifier.size(8.dp))
                                 Text(
                                     text  = java.time.LocalDate.ofEpochDay(state.targetDateEpochDay).format(java.time.format.DateTimeFormatter.ofPattern("EEEE, MMM dd, yyyy")),
                                     style = MaterialTheme.typography.labelLarge,
                                     fontWeight = FontWeight.SemiBold,
-                                    color = ForestGreenLight,
+                                    color = NexoraMint,
                                 )
                             }
                         }
@@ -322,7 +322,7 @@ fun AddEditHabitScreen(
                     .height(52.dp),
                 shape  = MaterialTheme.shapes.large,
                 colors = ButtonDefaults.buttonColors(
-                    containerColor  = ForestGreenLight,
+                    containerColor  = NexoraMint,
                     contentColor    = Color(0xFF051005),
                     disabledContainerColor = SurfaceElevated,
                     disabledContentColor   = TextMuted,
@@ -346,9 +346,9 @@ fun AddEditHabitScreen(
 
 @Composable
 private fun DayToggle(label: String, selected: Boolean, onClick: () -> Unit) {
-    val bg    = if (selected) ForestGreenLight else SurfaceElevated
+    val bg    = if (selected) NexoraMint else SurfaceElevated
     val fg    = if (selected) Color(0xFF051005) else TextMuted
-    val border = if (selected) ForestGreenLight else SurfaceBorder
+    val border = if (selected) NexoraMint else SurfaceBorder
 
     Box(
         modifier = Modifier

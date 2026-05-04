@@ -43,6 +43,7 @@ fun ActivityHeatmap(
     title: String,
     days: List<DayIntensity>,
     modifier: Modifier = Modifier,
+    showTitle: Boolean = true
 ) {
     // Pad days list so the first element is Monday (if needed)
     val paddedDays = mutableListOf<DayIntensity?>()
@@ -74,13 +75,15 @@ fun ActivityHeatmap(
         tonalElevation = 2.dp,
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(
-                text  = title,
-                style = MaterialTheme.typography.titleSmall,
-                color = MaterialTheme.colorScheme.onSurface,
-            )
+            if (showTitle) {
+                Text(
+                    text  = title,
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
 
-            Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(10.dp))
+            }
 
             Row(verticalAlignment = Alignment.Top) {
                 Spacer(modifier = Modifier.width(LABEL_WIDTH + CELL_GAP))

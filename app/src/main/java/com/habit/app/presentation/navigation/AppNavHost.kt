@@ -17,6 +17,11 @@ import com.habit.app.presentation.passwords.PasswordListScreen
 import com.habit.app.presentation.passwords.PinEntryScreen
 import com.habit.app.presentation.settings.SettingsScreen
 import com.habit.app.presentation.welcome.WelcomeScreen
+import com.habit.app.presentation.budget.AddEditBudgetScreen
+import com.habit.app.presentation.budget.AddTransactionScreen
+import com.habit.app.presentation.budget.BudgetOverviewScreen
+import com.habit.app.presentation.budget.InsightsScreen
+import com.habit.app.presentation.budget.TransactionHistoryScreen
 
 @Composable
 fun AppNavHost(
@@ -73,6 +78,7 @@ fun AppNavHost(
             AllHabitsScreen(
                 onBack = { navController.popBackStack() },
                 onHabitClick = { navController.navigate(Routes.detail(it)) },
+                onAddHabit = { navController.navigate(Routes.Add) }
             )
         }
 
@@ -128,6 +134,48 @@ fun AppNavHost(
         composable(Routes.VaultBackup) {
             com.habit.app.presentation.passwords.VaultBackupScreen(
                 onBack = { navController.popBackStack() }
+            )
+        }
+
+        // ── Budget Tracker ───────────────────────────────────────────
+        composable(Routes.BudgetOverview) {
+            BudgetOverviewScreen(
+                onAddBudget = { navController.navigate(Routes.AddBudget) },
+                onEditBudget = { navController.navigate(Routes.editBudget(it)) },
+                onAddTransaction = { navController.navigate(Routes.AddTransaction) },
+                onHistory = { navController.navigate(Routes.TransactionHistory) },
+                onInsights = { navController.navigate(Routes.BudgetInsights) },
+            )
+        }
+        composable(Routes.AddBudget) {
+            AddEditBudgetScreen(
+                editId = null,
+                onBack = { navController.popBackStack() },
+            )
+        }
+        composable(
+            route = Routes.EditBudget,
+            arguments = listOf(navArgument("budgetId") { type = NavType.LongType }),
+        ) { backStack ->
+            val id = backStack.arguments?.getLong("budgetId")
+            AddEditBudgetScreen(
+                editId = id,
+                onBack = { navController.popBackStack() },
+            )
+        }
+        composable(Routes.AddTransaction) {
+            AddTransactionScreen(
+                onBack = { navController.popBackStack() },
+            )
+        }
+        composable(Routes.TransactionHistory) {
+            TransactionHistoryScreen(
+                onBack = { navController.popBackStack() },
+            )
+        }
+        composable(Routes.BudgetInsights) {
+            InsightsScreen(
+                onBack = { navController.popBackStack() },
             )
         }
     }

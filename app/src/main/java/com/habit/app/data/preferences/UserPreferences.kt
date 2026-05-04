@@ -23,6 +23,7 @@ data class UserPreferencesState(
     val remindersEnabled: Boolean = true,
     val widgetMode: WidgetDisplayMode = WidgetDisplayMode.Pending,
     val pinHash: String? = null,
+    val currencySymbol: String = "₹",
 )
 
 @Singleton
@@ -37,6 +38,7 @@ class UserPreferences @Inject constructor(
         val remindersEnabled = booleanPreferencesKey("reminders_enabled")
         val widgetMode = stringPreferencesKey("widget_mode")
         val pinHash = stringPreferencesKey("pin_hash")
+        val currencySymbol = stringPreferencesKey("currency_symbol")
     }
 
     val flow: Flow<UserPreferencesState> = dataStore.data.map { p ->
@@ -46,6 +48,7 @@ class UserPreferences @Inject constructor(
             remindersEnabled = p[Keys.remindersEnabled] ?: true,
             widgetMode = WidgetDisplayMode.fromRaw(p[Keys.widgetMode]),
             pinHash = p[Keys.pinHash],
+            currencySymbol = p[Keys.currencySymbol] ?: "₹",
         )
     }
 
@@ -75,6 +78,10 @@ class UserPreferences @Inject constructor(
 
     fun verifyPin(pin: String, storedHash: String?): Boolean {
         return storedHash != null && hashPin(pin) == storedHash
+    }
+
+    suspend fun setCurrencySymbol(symbol: String) {
+        dataStore.edit { it[Keys.currencySymbol] = symbol }
     }
 
     private fun hashPin(pin: String): String {

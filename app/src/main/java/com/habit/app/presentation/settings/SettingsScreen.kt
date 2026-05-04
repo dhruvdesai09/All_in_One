@@ -51,7 +51,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.habit.app.domain.WidgetDisplayMode
 import com.habit.app.presentation.theme.AccentEmerald
-import com.habit.app.presentation.theme.ForestGreenLight
+import com.habit.app.presentation.theme.NexoraMint
 import com.habit.app.presentation.theme.SurfaceBorder
 import com.habit.app.presentation.theme.SurfaceCard
 import com.habit.app.presentation.theme.TextMuted
@@ -78,7 +78,7 @@ fun SettingsScreen(
                 TextButton(onClick = {
                     viewModel.setReminder(timeState.hour, timeState.minute)
                     showTime = false
-                }) { Text("OK", color = ForestGreenLight) }
+                }) { Text("OK", color = NexoraMint) }
             },
             dismissButton = {
                 TextButton(onClick = { showTime = false }) { Text("Cancel") }
@@ -132,7 +132,7 @@ fun SettingsScreen(
                         onCheckedChange = viewModel::setRemindersEnabled,
                         colors   = SwitchDefaults.colors(
                             checkedThumbColor  = MaterialTheme.colorScheme.onPrimary,
-                            checkedTrackColor  = ForestGreenLight,
+                            checkedTrackColor  = NexoraMint,
                         ),
                     )
                 }
@@ -145,7 +145,7 @@ fun SettingsScreen(
                 ) {
                     Surface(
                         onClick = { if (prefs.remindersEnabled) showTime = true },
-                        color   = if (prefs.remindersEnabled) ForestGreenLight.copy(alpha = 0.15f)
+                        color   = if (prefs.remindersEnabled) NexoraMint.copy(alpha = 0.15f)
                                   else MaterialTheme.colorScheme.surfaceVariant,
                         shape   = MaterialTheme.shapes.small,
                     ) {
@@ -158,13 +158,13 @@ fun SettingsScreen(
                                 Icons.Outlined.Schedule,
                                 contentDescription = null,
                                 modifier = Modifier.size(16.dp),
-                                tint = if (prefs.remindersEnabled) ForestGreenLight else TextMuted,
+                                tint = if (prefs.remindersEnabled) NexoraMint else TextMuted,
                             )
                             Text(
                                 text  = "%02d:%02d".format(prefs.reminderHour, prefs.reminderMinute),
                                 style = MaterialTheme.typography.labelLarge,
                                 fontWeight = FontWeight.SemiBold,
-                                color = if (prefs.remindersEnabled) ForestGreenLight else TextMuted,
+                                color = if (prefs.remindersEnabled) NexoraMint else TextMuted,
                             )
                         }
                     }
@@ -197,9 +197,9 @@ fun SettingsScreen(
                                 )
                             },
                             colors = FilterChipDefaults.filterChipColors(
-                                selectedContainerColor     = ForestGreenLight.copy(alpha = 0.2f),
-                                selectedLabelColor         = ForestGreenLight,
-                                selectedLeadingIconColor   = ForestGreenLight,
+                                selectedContainerColor     = NexoraMint.copy(alpha = 0.2f),
+                                selectedLabelColor         = NexoraMint,
+                                selectedLeadingIconColor   = NexoraMint,
                             ),
                         )
                     }

@@ -12,19 +12,16 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,6 +29,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -39,14 +38,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.habit.app.presentation.theme.AccentEmerald
-import com.habit.app.presentation.theme.DangerRed
-import com.habit.app.presentation.theme.ForestGreen
+import com.habit.app.presentation.theme.NexoraGold
+import com.habit.app.presentation.theme.NexoraGoldDim
+import com.habit.app.presentation.theme.NexoraRose
 import com.habit.app.presentation.theme.SurfaceBorder
-import com.habit.app.presentation.theme.SurfaceCard
 import com.habit.app.presentation.theme.SurfaceElevated
 import com.habit.app.presentation.theme.TextMuted
-import com.habit.app.presentation.theme.TextSecondary
 
 private val keypad = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "", "0", "⌫")
 
@@ -67,7 +64,7 @@ fun PinEntryScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.surface)
+            .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -76,34 +73,37 @@ fun PinEntryScreen(
         Box(
             modifier = Modifier
                 .size(72.dp)
-                .clip(CircleShape)
-                .background(ForestGreen.copy(alpha = 0.15f)),
+                .shadow(40.dp, RoundedCornerShape(24.dp), spotColor = NexoraGold.copy(alpha = 0.2f))
+                .clip(RoundedCornerShape(24.dp))
+                .background(
+                    Brush.linearGradient(
+                        listOf(
+                            NexoraGold.copy(alpha = 0.2f),
+                            NexoraGoldDim.copy(alpha = 0.15f)
+                        )
+                    )
+                )
+                .border(1.dp, NexoraGold.copy(alpha = 0.3f), RoundedCornerShape(24.dp)),
             contentAlignment = Alignment.Center,
         ) {
-            Icon(
-                imageVector = Icons.Filled.Lock,
-                contentDescription = null,
-                tint = AccentEmerald,
-                modifier = Modifier.size(36.dp),
-            )
+            Text(text = "🔐", fontSize = 32.sp)
         }
 
         Spacer(Modifier.height(24.dp))
 
         Text(
-            text = if (isCreate) "Set a vault PIN" else "Enter vault PIN",
+            text = if (isCreate) "Set Vault PIN" else "Vault Access",
             style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onSurface,
         )
-        Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(4.dp))
         Text(
             text = if (isCreate)
                 "Choose a 4–6 digit PIN to protect your passwords"
             else
-                "Enter your PIN to access the password vault",
-            style = MaterialTheme.typography.bodyMedium,
-            color = TextSecondary,
+                "Enter your PIN to continue",
+            style = MaterialTheme.typography.bodySmall,
+            color = TextMuted,
             textAlign = TextAlign.Center,
         )
 
@@ -118,15 +118,12 @@ fun PinEntryScreen(
                 val filled = idx < state.pinInput.length
                 Box(
                     modifier = Modifier
-                        .size(if (filled) 16.dp else 14.dp)
+                        .size(14.dp)
                         .clip(CircleShape)
-                        .background(
-                            if (filled) AccentEmerald
-                            else SurfaceElevated
-                        )
+                        .background(if (filled) NexoraGold else SurfaceElevated)
                         .border(
-                            width = 1.5.dp,
-                            color = if (filled) AccentEmerald else SurfaceBorder,
+                            width = 2.dp,
+                            color = if (filled) NexoraGold else SurfaceBorder,
                             shape = CircleShape,
                         ),
                 )
@@ -142,7 +139,7 @@ fun PinEntryScreen(
             Spacer(Modifier.height(12.dp))
             Text(
                 text = state.pinError ?: "",
-                color = DangerRed,
+                color = NexoraRose,
                 style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier.padding(top = 12.dp),
             )
@@ -152,24 +149,28 @@ fun PinEntryScreen(
 
         // Keypad
         Column(
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.fillMaxWidth(0.85f),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             keypad.chunked(3).forEach { row ->
-                Row(horizontalArrangement = Arrangement.spacedBy(20.dp)) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
                     row.forEach { key ->
-                        KeypadButton(
-                            label = key,
-                            onClick = {
-                                when (key) {
-                                    "⌫" -> viewModel.onPinInputChange(
-                                        state.pinInput.dropLast(1)
-                                    )
-                                    "" -> { /* empty slot */ }
-                                    else -> viewModel.onPinInputChange(state.pinInput + key)
-                                }
-                            },
-                        )
+                        Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
+                            KeypadButton(
+                                label = key,
+                                onClick = {
+                                    when (key) {
+                                        "⌫" -> viewModel.onPinInputChange(state.pinInput.dropLast(1))
+                                        "" -> { /* empty slot */ }
+                                        else -> viewModel.onPinInputChange(state.pinInput + key)
+                                    }
+                                },
+                            )
+                        }
                     }
                 }
             }
@@ -177,53 +178,59 @@ fun PinEntryScreen(
 
         Spacer(Modifier.height(24.dp))
 
-        Button(
-            onClick = { viewModel.submitPin() },
-            enabled = state.pinInput.length >= 4,
+        // CTA
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(52.dp),
-            shape = RoundedCornerShape(14.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = ForestGreen,
-                contentColor = Color.White,
-                disabledContainerColor = SurfaceElevated,
-                disabledContentColor = TextMuted,
-            ),
+                .shadow(24.dp, RoundedCornerShape(16.dp), spotColor = NexoraGold.copy(alpha = 0.3f))
+                .clip(RoundedCornerShape(16.dp))
+                .background(Brush.linearGradient(listOf(NexoraGold, NexoraGoldDim)))
         ) {
-            Text(
-                text = if (isCreate) "Set PIN" else "Unlock",
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 16.sp,
-            )
+            Button(
+                onClick = { viewModel.submitPin() },
+                enabled = state.pinInput.length >= 4,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Transparent,
+                    contentColor = Color.White,
+                    disabledContainerColor = Color.Transparent,
+                    disabledContentColor = Color.White.copy(alpha = 0.5f),
+                )
+            ) {
+                Text(
+                    text = if (isCreate) "Set PIN" else "Unlock Vault",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                )
+            }
         }
     }
 }
 
 @Composable
 private fun KeypadButton(label: String, onClick: () -> Unit) {
+    if (label.isEmpty()) {
+        Box(modifier = Modifier.fillMaxWidth().aspectRatio(1f))
+        return
+    }
+
     Box(
         modifier = Modifier
-            .size(72.dp)
+            .fillMaxWidth(0.8f) // scale down slightly so they aren't touching
+            .aspectRatio(1f)
             .clip(CircleShape)
-            .background(
-                if (label.isEmpty()) Color.Transparent
-                else SurfaceCard
-            )
-            .then(
-                if (label.isNotEmpty()) Modifier.clickable(onClick = onClick)
-                else Modifier
-            ),
+            .background(SurfaceElevated)
+            .border(1.dp, SurfaceBorder, CircleShape)
+            .clickable(onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
-        if (label.isNotEmpty()) {
-            Text(
-                text = label,
-                fontSize = 22.sp,
-                fontWeight = if (label == "⌫") FontWeight.Normal else FontWeight.Medium,
-                color = if (label == "⌫") TextSecondary
-                else MaterialTheme.colorScheme.onSurface,
-            )
-        }
+        Text(
+            text = label,
+            fontSize = if (label == "⌫") 16.sp else 20.sp,
+            fontWeight = FontWeight.Medium,
+            color = if (label == "⌫") TextMuted else MaterialTheme.colorScheme.onSurface,
+        )
     }
 }

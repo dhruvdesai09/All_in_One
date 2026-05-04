@@ -23,4 +23,13 @@ object Routes {
     const val PasswordDetail = "password_detail/{passwordId}"
     fun passwordDetail(id: Long) = "password_detail/$id"
     const val VaultBackup = "vault_backup"
+
+    // Budget Tracker
+    const val BudgetOverview = "budget_overview"
+    const val AddBudget = "add_budget"
+    const val EditBudget = "edit_budget/{budgetId}"
+    fun editBudget(id: Long) = "edit_budget/$id"
+    const val AddTransaction = "add_transaction"
+    const val TransactionHistory = "transaction_history"
+    const val BudgetInsights = "budget_insights"
 }

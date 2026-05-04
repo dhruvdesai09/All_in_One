@@ -69,7 +69,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.habit.app.presentation.theme.AccentEmerald
 import com.habit.app.presentation.theme.DangerRed
 import com.habit.app.presentation.theme.ForestGreen
-import com.habit.app.presentation.theme.ForestGreenLight
+import com.habit.app.presentation.theme.NexoraMint
 import com.habit.app.presentation.theme.SurfaceBorder
 import com.habit.app.presentation.theme.SurfaceCard
 import com.habit.app.presentation.theme.SurfaceElevated
@@ -276,13 +276,13 @@ fun VaultBackupScreen(
                             modifier = Modifier
                                 .size(36.dp)
                                 .clip(CircleShape)
-                                .background(ForestGreenLight.copy(alpha = 0.15f)),
+                                .background(NexoraMint.copy(alpha = 0.15f)),
                             contentAlignment = Alignment.Center,
                         ) {
                             Icon(
                                 Icons.Filled.FileDownload,
                                 contentDescription = null,
-                                tint = ForestGreenLight,
+                                tint = NexoraMint,
                                 modifier = Modifier.size(18.dp),
                             )
                         }
@@ -332,7 +332,7 @@ fun VaultBackupScreen(
                     modifier = Modifier.fillMaxWidth().height(50.dp),
                     shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = ForestGreenLight,
+                        containerColor = NexoraMint,
                         contentColor = Color.White,
                         disabledContainerColor = SurfaceElevated,
                     ),
