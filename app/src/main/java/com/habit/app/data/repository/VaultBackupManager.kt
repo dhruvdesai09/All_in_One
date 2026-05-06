@@ -30,7 +30,7 @@ class VaultBackupManager @Inject constructor(
         val encrypted = BackupCrypto.encrypt(entries, passphrase)
 
         val date = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-        val file = File(context.cacheDir, "dailybase_backup_$date.dvault")
+        val file = File(context.cacheDir, "nucleus_backup_$date.dvault")
         file.writeText(encrypted)
 
         FileProvider.getUriForFile(

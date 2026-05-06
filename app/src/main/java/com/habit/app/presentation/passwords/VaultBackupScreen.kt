@@ -114,7 +114,7 @@ fun VaultBackupScreen(
             putExtra(Intent.EXTRA_STREAM, uri)
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
-        context.startActivity(Intent.createChooser(shareIntent, "Save DailyBase Backup"))
+        context.startActivity(Intent.createChooser(shareIntent, "Save Nucleus Backup"))
         viewModel.resetBackupState()
     }
 
